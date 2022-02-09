@@ -204,7 +204,6 @@ local function cache_skills()
         for _, skill in ipairs(skills) do
             local dif = self.stats[skill].base - cached_skills[skill]
             if dif > 0 then
-                ui.showMessage(skill .. " increased!")
                 cached_skills[skill] = self.stats[skill].base
                 local a = governing_attribute[skill]
                 attribute_skill_ups[a] = attribute_skill_ups[a] + dif
@@ -272,9 +271,6 @@ end
 
 local on_update_dt = nil
 local function onUpdate()
-    self.stats.athletics.progress = 1.0
-    self.stats.acrobatics.progress = 1.0
-
     local dt = on_update_dt
 
     if not character_creation_complete then
