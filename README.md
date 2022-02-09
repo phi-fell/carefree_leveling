@@ -13,6 +13,7 @@ To be specific, this mod:
  - Keeps track of your level ups and which attributes you increase
  - If you choose an attribute on leveling up, that attribute's "cap" is raised by 5 points
  - when an attribute is below it's cap, if there have been 2 or more skill increases in a relevant skill, it is increased by 1 (and those skill increases are used up)
+ - unlike vanilla, unused skill increases carry over to future levelups
  - (optional) recalculates your health as if you had prioritized endurance for the early levels.
  - (optional) let's you get +2 or +3 luck per level if your other attributes are maxed out (i.e. if you select speed,strength,luck but strength is already at 100, you'll get 2 luck)
 
@@ -32,6 +33,9 @@ for example
  - the remaining 10 acrobatics increases are still tracked, and will be applied if/when you select strength on a level up again
 
 ## Installation and Use
+
+CURRENTLY REQUIRES AN UNMERGED BRANCH OF OPENMW: https://gitlab.com/OpenMW/openmw/-/merge_requests/1521
+It looks like the API is settled, so this should work in openmw 0.48 when it's released (and nightlies after that merges) but until then if you want to use this, you need to download artifacts from that merge request.
 
 REQUIRES A FRESH SAVE TO WORK.  The scripts should just ignore old saves.
 
