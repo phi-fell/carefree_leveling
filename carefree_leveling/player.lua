@@ -159,20 +159,30 @@ local function papers_present()
 end
 
 local function increase_attributes_if_needed()
+    local msg = ""
     for _, attr in ipairs(attributes) do
         while attribute_points_owed[attr] > 0 and attribute_skill_ups[attr] >= 2 do
             self.stats[attr].base = self.stats[attr].base + 1
             attribute_points_owed[attr] = attribute_points_owed[attr] - 1
             attribute_skill_ups[attr] = attribute_skill_ups[attr] - 2
+            if msg ~= "" then
+                msg = msg .. ", "
+            end
+            msg = msg .. attr:gsub("^%l", string.upper) .. " increased to " .. self.stats[attr].base
         end
         cached_attributes[attr] = self.stats[attr].base
         if retroactive_luck then
             while self.stats.luck.base + luck_multiplier <= 100 and self.stats[attr].base + attribute_points_owed[attr] >= 105 do
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
                 self.stats.luck.base = self.stats.luck.base + luck_multiplier
+                if msg ~= "" then
+                    msg = msg .. ", "
+                end
+                msg = msg .. "Luck increased to " .. self.stats.luck.base
             end
         end
     end
+    ui.showMessage(msg)
     if retroactive_health then
         local h = (starting_strength + starting_endurance) / 2
         local l = 1
