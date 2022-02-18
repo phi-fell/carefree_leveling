@@ -158,29 +158,44 @@ local function papers_present()
     return false
 end
 
-local function increase_attributes_if_needed()
+local function increase_attributes_if_needed(lpts)
     local msg = ""
     for _, attr in ipairs(attributes) do
+        local pts = 0
         while attribute_points_owed[attr] > 0 and attribute_skill_ups[attr] >= 2 do
             self.stats[attr].base = self.stats[attr].base + 1
             attribute_points_owed[attr] = attribute_points_owed[attr] - 1
             attribute_skill_ups[attr] = attribute_skill_ups[attr] - 2
+            pts = pts + 1
+        end
+        if pts > 0 then
             if msg ~= "" then
                 msg = msg .. ", "
             end
-            msg = msg .. attr:gsub("^%l", string.upper) .. " increased to " .. self.stats[attr].base
+            msg = msg .. attr:gsub("^%l", string.upper) .. " increased"
+            if pts > 1 then
+                msg = msg .. " (+" .. pts .. ")"
+            end
+            msg = msg .. " to " .. self.stats[attr].base
         end
         cached_attributes[attr] = self.stats[attr].base
         if retroactive_luck then
             while self.stats.luck.base + luck_multiplier <= 100 and self.stats[attr].base + attribute_points_owed[attr] >= 105 do
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
                 self.stats.luck.base = self.stats.luck.base + luck_multiplier
-                if msg ~= "" then
-                    msg = msg .. ", "
-                end
-                msg = msg .. "Luck increased to " .. self.stats.luck.base
+                lpts = lpts + luck_multiplier
             end
         end
+    end
+    if lpts > 0 then
+        if msg ~= "" then
+            msg = msg .. ", "
+        end
+        msg = msg .. "Luck increased"
+        if lpts > 1 then
+            msg = msg .. " (+" .. lpts .. ")"
+        end
+        msg = msg .. " to " .. self.stats.luck.base
     end
     ui.showMessage(msg)
     if retroactive_health then
@@ -292,12 +307,14 @@ local function onUpdate()
         if self.stats.level.current > level then
             level = self.stats.level.current
             local attrs_increased = 0
+            local lpts = 0
             for _, attribute in ipairs(attributes) do
                 local dif = self.stats[attribute].base - cached_attributes[attribute]
                 if dif > 0 then
                     self.stats[attribute].base = self.stats[attribute].base - dif
                     if attribute == 'luck' then
                         self.stats.luck.base = self.stats.luck.base + luck_multiplier
+                        lpts = lpts + luck_multiplier
                     else
                         attribute_points_owed[attribute] = attribute_points_owed[attribute] + 5
                     end
@@ -308,9 +325,10 @@ local function onUpdate()
                 while attrs_increased < 3 do
                     self.stats.luck.base = self.stats.luck.base + luck_multiplier
                     attrs_increased = attrs_increased + 1
+                    lpts = lpts + luck_multiplier
                 end
             end
-            increase_attributes_if_needed()
+            increase_attributes_if_needed(lpts)
             update_status()
         end
         cache_attributes()
