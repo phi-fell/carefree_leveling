@@ -232,7 +232,7 @@ local function cache_skills()
                 cached_skills[skill] = self.stats[skill].base
                 local a = governing_attribute[skill]
                 attribute_skill_ups[a] = attribute_skill_ups[a] + dif
-                increase_attributes_if_needed()
+                increase_attributes_if_needed(0)
                 update_status()
             end
         end
