@@ -3,35 +3,7 @@ local ui = require('openmw.ui')
 local util = require('openmw.util')
 local input = require('openmw.input')
 local self = require('openmw.self')
-
--- SETTINGS
-
--- when pressed, this key brings up a little status menu
--- for a full list of available keys, see https://openmw.readthedocs.io/en/latest/reference/lua-scripting/openmw_input.html##(KEY)
-local status_key = input.KEY.P
-
--- change the 1 to a 5 to be able to get 5 luck on levelups (2, 3, or 4 will also work)
--- if you increase this above 1, you may wish to disable retroactive_luck
-local luck_multiplier = 1
-
--- if true, max health will be recaclulated on levelups to be the amount you would have gotten if you
---  had leveled up endurance +5 every level until it reached your current endurance value.
---
--- this is to say, with this on, two characters at the same level, with the same endurance
--- (and the same starting endurance and starting strength) will have the same health
-local retroactive_health = true
-
--- if true, will check for levelups where less than 3 attributes increase
--- (this would occur if a chosen attribute is capped)
--- in this case, the extra points will go to luck
---
--- e.g. if a character is at a high level and has capped all attributes except luck,
--- then on a levelup they might select Luck, Strength, Speed
--- because Strength and Speed are capped, they would not change,
--- so this mod would add 2 extra points to luck to account for this. (1 for strength, 1 for speed)
-local retroactive_luck = true
-
--- MAIN SCRIPT BODY
+local settings = require('carefree_leveling.settings')
 
 local function handle_error(e)
     ui.showMessage('Err: ' .. tostring(e))
@@ -178,11 +150,11 @@ local function increase_attributes_if_needed(lpts)
             msg = msg .. " to " .. self.stats[attr].base
         end
         cached_attributes[attr] = self.stats[attr].base
-        if retroactive_luck then
-            while self.stats.luck.base + luck_multiplier <= 100 and self.stats[attr].base + attribute_points_owed[attr] >= 105 do
+        if settings.RETROACTIVE_LUCK then
+            while self.stats.luck.base + settings.LUCK_MULTIPLIER <= 100 and self.stats[attr].base + attribute_points_owed[attr] >= 105 do
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
-                self.stats.luck.base = self.stats.luck.base + luck_multiplier
-                lpts = lpts + luck_multiplier
+                self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
+                lpts = lpts + settings.LUCK_MULTIPLIER
             end
         end
     end
@@ -197,7 +169,7 @@ local function increase_attributes_if_needed(lpts)
         msg = msg .. " to " .. self.stats.luck.base
     end
     ui.showMessage(msg)
-    if retroactive_health then
+    if settings.RETROACTIVE_HEALTH then
         local h = (starting_strength + starting_endurance) / 2
         local l = 1
         local e = starting_endurance
@@ -292,7 +264,7 @@ local on_key_press_key = nil
 local function onKeyPress()
     local key = on_key_press_key
 
-    if key.code == status_key then
+    if key.code == settings.STATUS_KEY then
         status_ui.toggle_status()
     end
 end
@@ -316,19 +288,19 @@ local function onUpdate()
                 if dif > 0 then
                     self.stats[attribute].base = self.stats[attribute].base - dif
                     if attribute == 'luck' then
-                        self.stats.luck.base = self.stats.luck.base + luck_multiplier
-                        lpts = lpts + luck_multiplier
+                        self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
+                        lpts = lpts + settings.LUCK_MULTIPLIER
                     else
                         attribute_points_owed[attribute] = attribute_points_owed[attribute] + 5
                     end
                     attrs_increased = attrs_increased + 1
                 end
             end
-            if retroactive_luck then
+            if settings.RETROACTIVE_LUCK then
                 while attrs_increased < 3 do
-                    self.stats.luck.base = self.stats.luck.base + luck_multiplier
+                    self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
                     attrs_increased = attrs_increased + 1
-                    lpts = lpts + luck_multiplier
+                    lpts = lpts + settings.LUCK_MULTIPLIER
                 end
             end
             increase_attributes_if_needed(lpts)

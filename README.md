@@ -49,7 +49,7 @@ you'd just need to edit your openmw.cfg and add two lines to the end of it:
 
 `content=carefree_leveling.omwscripts`
 
-Press P to toggle the status menu (key changable in `player.lua`)
+Press P to toggle the status menu (key changable in `settings.lua`)
 
 ## Settings
-Check `player.lua`, you can turn off retroactive health, and retroactive luck, you can also change the luck multiplier, and which key is used to open the status menu (default is P)
+Check `settings.lua`, you can turn off retroactive health, and retroactive luck, you can also change the luck multiplier, and which key is used to open the status menu (default is P)
