@@ -1,4 +1,3 @@
-local query = require('openmw.query')
 local nearby = require('openmw.nearby')
 local ui = require('openmw.ui')
 local util = require('openmw.util')
@@ -150,10 +149,10 @@ local function update_status()
 end
 
 local function papers_present()
-    local query = query.items:where(query.OBJECT.recordId:eq('chargen statssheet'))
-    local papers = nearby.items:select(query)
-    for _, found in ipairs(papers) do
-        return true
+    for _, item in ipairs(nearby.items) do
+        if item.recordId == 'chargen statssheet' then
+            return true
+        end
     end
     return false
 end
@@ -267,12 +266,16 @@ local function onSave()
     }
 end
 
-local function onLoad(data)
+local on_load_data = nil
+local function onLoad()
+    local data = on_load_data
+
     if not data or not data.version or data.version ~= scriptVersion then
         local msg = 'Warning: Carefree Leveling was saved with a different version of the script. Errors may occur.'
         error(msg)
         ui.showMessage(msg)
     end
+
     status_ui.load(data.ui)
     character_creation_complete = data.character_creation_complete
     level = data.level
@@ -338,8 +341,13 @@ end
 
 return {
     engineHandlers = {
-        onSave = onSave,
-        onLoad = onLoad,
+        onSave = function()
+            try(onSave)
+        end,
+        onLoad = function(data)
+            on_load_data = data
+            try(onLoad)
+        end,
         onKeyPress = function(key)
             on_key_press_key = key
             try(onKeyPress)
