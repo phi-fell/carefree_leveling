@@ -3,6 +3,7 @@ local ui = require('openmw.ui')
 local util = require('openmw.util')
 local input = require('openmw.input')
 local self = require('openmw.self')
+local types = require('openmw.types')
 local settings = require('carefree_leveling.settings')
 
 local function handle_error(e)
@@ -108,6 +109,34 @@ local cached_skills = nil
 
 -- General Functions
 
+local function getCurrentLevel()
+    return types.Player.stats.level(self).current
+end
+
+local function getSkillLevel(skill)
+    return types.Player.stats.skills[skill](self).base
+end
+local function setSkillLevel(skill, val)
+    types.Player.stats.skills[skill](self).base = val
+end
+local function modSkillLevel(skill, amnt)
+    types.Player.stats.skills[skill](self).base = types.Player.stats.skills[skill](self).base + amnt
+end
+
+local function getAttribute(attr)
+    return types.Player.stats.attributes[attr](self).base
+end
+local function setAttribute(attr, val)
+    types.Player.stats.attributes[attr](self).base = val
+end
+local function modAttribute(attr, amnt)
+    types.Player.stats.attributes[attr](self).base = types.Player.stats.attributes[attr](self).base + amnt
+end
+
+local function setHealth(val)
+    types.Player.stats.dynamic.health(self).base = val
+end
+
 local function update_status()
     local v = {}
     for _, attribute in ipairs(attributes) do
@@ -134,7 +163,7 @@ local function increase_attributes_if_needed(lpts)
     for _, attr in ipairs(attributes) do
         local pts = 0
         while attribute_points_owed[attr] > 0 and attribute_skill_ups[attr] >= 2 do
-            self.stats[attr].base = self.stats[attr].base + 1
+            modAttribute(attr, 1)
             attribute_points_owed[attr] = attribute_points_owed[attr] - 1
             attribute_skill_ups[attr] = attribute_skill_ups[attr] - 2
             pts = pts + 1
@@ -147,13 +176,13 @@ local function increase_attributes_if_needed(lpts)
             if pts > 1 then
                 msg = msg .. " (+" .. pts .. ")"
             end
-            msg = msg .. " to " .. self.stats[attr].base
+            msg = msg .. " to " .. getAttribute(attr)
         end
-        cached_attributes[attr] = self.stats[attr].base
+        cached_attributes[attr] = getAttribute(attr)
         if settings.RETROACTIVE_LUCK then
-            while self.stats.luck.base + settings.LUCK_MULTIPLIER <= 100 and self.stats[attr].base + attribute_points_owed[attr] >= 105 do
+            while getAttribute('luck') + settings.LUCK_MULTIPLIER <= 100 and getAttribute(attr) + attribute_points_owed[attr] >= 105 do
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
-                self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
+                modAttribute('luck', settings.LUCK_MULTIPLIER)
                 lpts = lpts + settings.LUCK_MULTIPLIER
             end
         end
@@ -166,23 +195,23 @@ local function increase_attributes_if_needed(lpts)
         if lpts > 1 then
             msg = msg .. " (+" .. lpts .. ")"
         end
-        msg = msg .. " to " .. self.stats.luck.base
+        msg = msg .. " to " .. getAttribute('luck')
     end
     ui.showMessage(msg)
     if settings.RETROACTIVE_HEALTH then
         local h = (starting_strength + starting_endurance) / 2
         local l = 1
         local e = starting_endurance
-        while l < self.stats.level.current do
-            if e + 5 < self.stats.endurance.base then
+        while l < getCurrentLevel() do
+            if e + 5 < getAttribute('endurance') then
                 e = e + 5
             else
-                e = self.stats.endurance.base
+                e = getAttribute('endurance')
             end
             h = h + (e / 10)
             l = l + 1
         end
-        self.stats.health.base = h
+        setHealth(h)
     end
 end
 
@@ -191,16 +220,16 @@ local function cache_attributes()
         cached_attributes = {}
     end
     for _, attribute in ipairs(attributes) do
-        cached_attributes[attribute] = self.stats[attribute].base
+        cached_attributes[attribute] = getAttribute(attribute)
     end
 end
 
 local function cache_skills()
     if cached_skills then
         for _, skill in ipairs(skills) do
-            local dif = self.stats[skill].base - cached_skills[skill]
+            local dif = getSkillLevel(skill) - cached_skills[skill]
             if dif > 0 then
-                cached_skills[skill] = self.stats[skill].base
+                cached_skills[skill] = getSkillLevel(skill)
                 local a = governing_attribute[skill]
                 attribute_skill_ups[a] = attribute_skill_ups[a] + dif
                 increase_attributes_if_needed(0)
@@ -210,15 +239,15 @@ local function cache_skills()
     else
         cached_skills = {}
         for _, skill in ipairs(skills) do
-            cached_skills[skill] = self.stats[skill].base
+            cached_skills[skill] = getSkillLevel(skill)
         end
     end
 end
 
 local function init_player_stats()
-    level = self.stats.level.current
-    starting_endurance = self.stats.endurance.base
-    starting_strength = self.stats.strength.base
+    level = getCurrentLevel()
+    starting_endurance = getAttribute('endurance')
+    starting_strength = getAttribute('strength')
     ui.showMessage('Carefree Leveling Initialized!')
     update_status()
 end
@@ -242,7 +271,20 @@ local on_load_data = nil
 local function onLoad()
     local data = on_load_data
 
-    if not data or not data.version or data.version ~= scriptVersion then
+    if not data then
+        local msg = 'Warning: Carefree Leveling save data is missing for this character.'
+        error(msg)
+        ui.showMessage(msg)
+        return
+    end
+
+    if not data.version then
+        local msg = 'Warning: Carefree Leveling was saved with an unknown version of the script. Errors may occur.'
+        error(msg)
+        ui.showMessage(msg)
+    end
+
+    if data.version ~= scriptVersion then
         local msg = 'Warning: Carefree Leveling was saved with a different version of the script. Errors may occur.'
         error(msg)
         ui.showMessage(msg)
@@ -279,16 +321,16 @@ local function onUpdate()
             init_player_stats()
         end
     else
-        if self.stats.level.current > level then
-            level = self.stats.level.current
+        if getCurrentLevel() > level then
+            level = getCurrentLevel()
             local attrs_increased = 0
             local lpts = 0
             for _, attribute in ipairs(attributes) do
-                local dif = self.stats[attribute].base - cached_attributes[attribute]
+                local dif = getAttribute(attribute) - cached_attributes[attribute]
                 if dif > 0 then
-                    self.stats[attribute].base = self.stats[attribute].base - dif
+                    modAttribute(attribute, -dif)
                     if attribute == 'luck' then
-                        self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
+                        modAttribute('luck', settings.LUCK_MULTIPLIER)
                         lpts = lpts + settings.LUCK_MULTIPLIER
                     else
                         attribute_points_owed[attribute] = attribute_points_owed[attribute] + 5
@@ -298,7 +340,7 @@ local function onUpdate()
             end
             if settings.RETROACTIVE_LUCK then
                 while attrs_increased < 3 do
-                    self.stats.luck.base = self.stats.luck.base + settings.LUCK_MULTIPLIER
+                    modAttribute('luck', settings.LUCK_MULTIPLIER)
                     attrs_increased = attrs_increased + 1
                     lpts = lpts + settings.LUCK_MULTIPLIER
                 end
