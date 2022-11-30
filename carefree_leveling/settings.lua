@@ -37,7 +37,6 @@ local retroactive_luck = true
 
 
 
-
 -- ignore this
 return {
     STATUS_KEY = status_key,
