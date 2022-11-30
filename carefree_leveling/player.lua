@@ -15,7 +15,7 @@ end
 
 local status_ui = require('carefree_leveling.ui')
 
-local scriptVersion = 0
+local scriptVersion = 1
 
 local status_menu_element = nil
 
