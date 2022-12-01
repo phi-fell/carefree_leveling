@@ -12,7 +12,7 @@ To be specific, this mod:
  - keeps track of your skill increases
  - Keeps track of your level ups and which attributes you increase
  - If you choose an attribute on leveling up, that attribute's "cap" is raised by 5 points
- - when an attribute is below it's cap, if there have been 2 or more skill increases in a relevant skill, it is increased by 1 (and those skill increases are used up)
+ - when an attribute is below it's cap, if there have been 2 or more skill increases in a relevant skill, it is increased (and those skill increases are used up)
  - unlike vanilla, unused skill increases carry over to future levelups
  - (optional) recalculates your health as if you had prioritized endurance for the early levels.
  - (optional) lets you get +2 or +3 luck per level if your other attributes are maxed out (i.e. if you select speed,strength,luck but strength is already at 100, you'll get 2 luck, if strength and speed were both at 100, you'd get 3 luck)
@@ -52,8 +52,10 @@ you'd just need to edit your openmw.cfg and add two lines to the end of it:
 
 Press P to toggle the status menu (key changable in the "Scripts" options in game)
 
+The status menu shows attributes with queued increases (i.e. if you level governed skills it will increase) as well as skill ups (2 skill ups gives you 1 attribute point)
+
 ## Settings
-In game, in the "Scripts" options, you can turn off retroactive health, and retroactive luck, you can also change the luck multiplier, and which key is used to open the status menu (default is P).
+In game, in the "Scripts" options, you can turn off retroactive health and retroactive luck, you can also change the luck multiplier, and which key is used to open the status menu (default is P).
 
 You can also set the status menu horizontal and vertical alignment.  I can add more options if anyone needs it.
 

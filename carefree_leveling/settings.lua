@@ -61,7 +61,7 @@ I.Settings.registerGroup {
             renderer = 'inputKeySelection',
             name = 'Toggle Status Key',
             description = 'When pressed, this key brings up a little status menu showing banked attribute points and such.',
-            default = nil,
+            default = input.KEY.P,
         },
     },
 }
