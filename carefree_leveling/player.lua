@@ -355,9 +355,7 @@ end
 
 return {
     engineHandlers = {
-        onSave = function()
-            try(onSave)
-        end,
+        onSave = onSave,
         onLoad = function(data)
             on_load_data = data
             try(onLoad)
