@@ -60,3 +60,6 @@ In game, in the "Scripts" options, you can turn off retroactive health and retro
 You can also set the status menu horizontal and vertical alignment.  I can add more options if anyone needs it.
 
 The way I previously used to make the status menu draggable stopped working at some point and I don't have the inclination to fix that right now (hence the alignment settings), but pull requests are welcome.
+
+## About Bittercup
+Technically, in vanilla morrowind it is possible to minmax health by using Bittercup to increase endurance early on.  This mod's "Retroactive Health" does not take bittercup into account, so if you're going this route, this mod won't help you with that.  I feel like rushing bittercup is against the carefree goal of this mod but if anyone desperately wants an option to handle calculating that correctly It's not out of the question.  To be clear, drinking from bittercup shouldn't cause any problems, it just will essentially count as if you had chosen the raised attribute on 4 level ups instead of the lowered one. (which in some sense ruins the point of drinking it - since the only utility I can see would be rushing endurance - but shouldn't break anything) if you do encounter a bug (related to bittercup or otherwise) please let me know.
