@@ -4,6 +4,7 @@ local util = require('openmw.util')
 local input = require('openmw.input')
 local self = require('openmw.self')
 local types = require('openmw.types')
+local storage = require('openmw.storage')
 local settings = require('carefree_leveling.settings')
 
 local function handle_error(e)
@@ -16,7 +17,7 @@ end
 
 local status_ui = require('carefree_leveling.ui')
 
-local scriptVersion = 1
+local scriptVersion = 0
 
 local status_menu_element = nil
 
@@ -179,11 +180,11 @@ local function increase_attributes_if_needed(lpts)
             msg = msg .. " to " .. getAttribute(attr)
         end
         cached_attributes[attr] = getAttribute(attr)
-        if settings.RETROACTIVE_LUCK then
-            while getAttribute('luck') + settings.LUCK_MULTIPLIER <= 100 and getAttribute(attr) + attribute_points_owed[attr] >= 105 do
+        if settings.retroactive_luck() then
+            while getAttribute('luck') + settings.luck_multiplier() <= 100 and getAttribute(attr) + attribute_points_owed[attr] >= 105 do
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
-                modAttribute('luck', settings.LUCK_MULTIPLIER)
-                lpts = lpts + settings.LUCK_MULTIPLIER
+                modAttribute('luck', settings.luck_multiplier())
+                lpts = lpts + settings.luck_multiplier()
             end
         end
     end
@@ -198,7 +199,7 @@ local function increase_attributes_if_needed(lpts)
         msg = msg .. " to " .. getAttribute('luck')
     end
     ui.showMessage(msg)
-    if settings.RETROACTIVE_HEALTH then
+    if settings.retroactive_health() then
         local h = (starting_strength + starting_endurance) / 2
         local l = 1
         local e = starting_endurance
@@ -273,24 +274,23 @@ local function onLoad()
 
     if not data then
         local msg = 'Warning: Carefree Leveling save data is missing for this character.'
-        error(msg)
+        ui.printToConsole(msg, ui.CONSOLE_COLOR.Error)
         ui.showMessage(msg)
         return
     end
 
     if not data.version then
         local msg = 'Warning: Carefree Leveling was saved with an unknown version of the script. Errors may occur.'
-        error(msg)
+        ui.printToConsole(msg, ui.CONSOLE_COLOR.Error)
         ui.showMessage(msg)
     end
 
     if data.version ~= scriptVersion then
         local msg = 'Warning: Carefree Leveling was saved with a different version of the script. Errors may occur.'
-        error(msg)
+        ui.printToConsole(msg, ui.CONSOLE_COLOR.Error)
         ui.showMessage(msg)
     end
 
-    status_ui.load(data.ui)
     character_creation_complete = data.character_creation_complete
     level = data.level
     starting_endurance = data.starting_endurance
@@ -306,7 +306,7 @@ local on_key_press_key = nil
 local function onKeyPress()
     local key = on_key_press_key
 
-    if key.code == settings.STATUS_KEY then
+    if key.code == settings.status_key() then
         status_ui.toggle_status()
     end
 end
@@ -330,19 +330,19 @@ local function onUpdate()
                 if dif > 0 then
                     modAttribute(attribute, -dif)
                     if attribute == 'luck' then
-                        modAttribute('luck', settings.LUCK_MULTIPLIER)
-                        lpts = lpts + settings.LUCK_MULTIPLIER
+                        modAttribute('luck', settings.luck_multiplier())
+                        lpts = lpts + settings.luck_multiplier()
                     else
                         attribute_points_owed[attribute] = attribute_points_owed[attribute] + 5
                     end
                     attrs_increased = attrs_increased + 1
                 end
             end
-            if settings.RETROACTIVE_LUCK then
+            if settings.retroactive_luck() then
                 while attrs_increased < 3 do
-                    modAttribute('luck', settings.LUCK_MULTIPLIER)
+                    modAttribute('luck', settings.luck_multiplier())
                     attrs_increased = attrs_increased + 1
-                    lpts = lpts + settings.LUCK_MULTIPLIER
+                    lpts = lpts + settings.luck_multiplier()
                 end
             end
             increase_attributes_if_needed(lpts)

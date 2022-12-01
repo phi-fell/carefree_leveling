@@ -1,9 +1,11 @@
 local ui = require('openmw.ui')
 local async = require('openmw.async')
 local util = require('openmw.util')
+local interfaces = require('openmw.interfaces')
+
+local templates = interfaces.MWUI.templates
 
 local constants = require('carefree_leveling.constants')
-local templates = require('carefree_leveling.templates')
 
 -- Text feed variables
 local text_feed_lines = nil
@@ -20,8 +22,7 @@ end
 -- Text is on same line as previous
 local function same_line_a(t, rpx, a)
     return {
-        type = ui.TYPE.Text,
-        template = templates.text,
+        template = templates.textNormal,
         props = {
             position = util.vector2(text_feed_offset_x * (0.5 - rpx) * 2, text_feed_offset_y + (text_feed_lines * constants.LINE_HEIGHT)),
             relativePosition = util.vector2(rpx, text_feed_rpy),
@@ -80,14 +81,6 @@ local status_layout = nil
 local status_element = nil
 local attribute_data = nil
 
-local function update_pos()
-    if set_pos then
-        status_layout.props.position = set_pos
-        status_layout.props.anchor = nil
-        status_layout.props.relativePosition = nil
-    end
-end
-
 local function update_size()
     status_layout.props.size = util.vector2(status_layout.props.size.x, ((text_feed_lines + 1) * constants.LINE_HEIGHT) + (constants.BORDER_SIZE * 4))
 end
@@ -121,33 +114,36 @@ local function reset_status_layout()
         end
     end
     status_layout = {
-        layer = 'Windows',
-        type = ui.TYPE.Window,
-        template = templates.window,
+        type = ui.TYPE.Widget,
         props = {
-            position = util.vector2(0, 0),
-            relativePosition = util.vector2(1, 0),
-            anchor = util.vector2(1, 0),
             size = util.vector2(220, 40),
-        },
-        events = {
-            windowDrag = async:callback(function(coord, layout)
-                set_pos = coord.position
-                layout.props.position = set_pos
-                layout.props.anchor = nil
-                layout.props.relativePosition = nil
-            end),
         },
         content = ui.content(content),
     }
-    update_pos()
     update_size()
 end
 
 
 local function show_status() 
     reset_status_layout()
-    status_element = ui.create(status_layout)
+    local props = {
+        position = util.vector2(0, 0),
+        relativePosition = util.vector2(1, 0),
+        anchor = util.vector2(1, 0),
+    }
+    if set_pos then
+        props.position = set_pos
+        props.anchor = nil
+        props.relativePosition = nil
+    end
+    status_element = ui.create{
+        layer = 'Windows',
+        template = templates.boxTransparentThick,
+        props = props,
+        content = ui.content {
+            status_layout,
+        },
+    }
 end
 local function hide_status() 
     status_element:destroy()
