@@ -1,4 +1,4 @@
-# Carefree Leveling
+# Phi's Carefree Leveling
 Optimal vanilla leveling for OpenMW 0.48
 
 ## What it does
