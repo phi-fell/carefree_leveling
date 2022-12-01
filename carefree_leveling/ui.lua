@@ -6,6 +6,7 @@ local interfaces = require('openmw.interfaces')
 local templates = interfaces.MWUI.templates
 
 local constants = require('carefree_leveling.constants')
+local settings = require('carefree_leveling.settings')
 
 -- Text feed variables
 local text_feed_lines = nil
@@ -128,8 +129,8 @@ local function show_status()
     reset_status_layout()
     local props = {
         position = util.vector2(0, 0),
-        relativePosition = util.vector2(1, 0),
-        anchor = util.vector2(1, 0),
+        relativePosition = settings.status_alignment(),
+        anchor = settings.status_alignment(),
     }
     if set_pos then
         props.position = set_pos

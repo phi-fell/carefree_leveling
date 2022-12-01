@@ -67,6 +67,30 @@ I.Settings.registerGroup {
 }
 
 I.Settings.registerGroup {
+    key = PREFIX .. 'SettingsUI',
+    l10n = PREFIX,
+    page = PREFIX,
+    name = 'UI',
+    permanentStorage = false,
+    settings = {
+        {
+            key = 'status_vertical',
+            renderer = 'number',
+            name = 'Status Vertical Alignment',
+            description = 'Aligns the status window vertically.  0 is top of the screen, 1 is bottom, 0.5 is centered vertically',
+            default = 0,
+        },
+        {
+            key = 'status_horizontal',
+            renderer = 'number',
+            name = 'Status Horizontal Alignment',
+            description = 'Aligns the status window horizontally.  0 is left side of the screen, 1 is right side, 0.5 is centered horizontally',
+            default = 1,
+        },
+    },
+}
+
+I.Settings.registerGroup {
     key = PREFIX .. 'SettingsMisc',
     l10n = PREFIX,
     page = PREFIX,
@@ -128,6 +152,10 @@ local luck_multiplier = 1
 return {
     status_key = function()
         return storage.playerSection(PREFIX .. 'SettingsControls'):get('status_key')
+    end,
+    status_alignment = function()
+        local ui_settings = storage.playerSection(PREFIX .. 'SettingsUI')
+        return v2(ui_settings:get('status_horizontal'),ui_settings:get('status_vertical'))
     end,
     luck_multiplier = function()
         return tonumber(storage.playerSection(PREFIX .. 'SettingsMisc'):get('luck_multiplier'):gsub("%s+", ""))
