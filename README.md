@@ -36,9 +36,9 @@ for example
 
 ## Installation and Use
 
-REQUIRES OPENMW 0.48+ - THIS MOD IS DEVELOPED ON A NIGHTLY BUILD, PLEASE REPORT ANY ISSUES IF IT DOESN'T WORK ON 0.48 WHEN THAT COMES OUT
+REQUIRES OPENMW 0.48 OR HIGHER, GET THE RELEASE CANDIDATE [HERE](https://openmw.org/2022/openmw-0-48-0-is-now-in-rc-phase/)
 
-REQUIRES A FRESH SAVE TO WORK.  The scripts should just ignore old saves.
+REQUIRES A FRESH SAVE TO WORK.  The scripts should just ignore old saves (though you will get a message about missing data).
 
 see: https://openmw.readthedocs.io/en/stable/reference/modding/mod-install.html
 
@@ -46,9 +46,11 @@ TL;DR: if you download this mod such that the `carefree_leveling.omwscripts` has
 
 you'd just need to edit your openmw.cfg and add two lines to the end of it:
 
-`data="OpenMW Mods/Phi's Carefree Leveling"`
+```
+data="OpenMW Mods/Phi's Carefree Leveling"
 
-`content=carefree_leveling.omwscripts`
+content=carefree_leveling.omwscripts
+```
 
 Press P to toggle the status menu (key changable in the "Scripts" options in game)
 
