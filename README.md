@@ -16,7 +16,7 @@ To be specific, this mod:
  - unlike vanilla, unused skill increases carry over to future levelups
  - (optional) recalculates your health as if you had prioritized endurance for the early levels.
  - (optional) lets you get +2 or +3 luck per level if your other attributes are maxed out (i.e. if you select speed,strength,luck but strength is already at 100, you'll get 2 luck, if strength and speed were both at 100, you'd get 3 luck)
- - (there's also an off-by-default setting to just increase luck gain, so you can get +2,+3,+4, or even +5 luck when it's chosen.  This is the only setting that is an actual departure from what is possible in vanilla morrowind, but I though some players might want it)
+ - (there's also an off-by-default setting to just increase luck gain, so you can get +2,+3,+4, or even +5 luck when it's chosen.  This is the only setting that is an actual departure from what is possible in vanilla morrowind, but I thought some players might want it)
 
 for example
  - You start the game with 40 Strength, 50 Speed, 40 Luck
