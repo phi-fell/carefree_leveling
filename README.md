@@ -1,6 +1,9 @@
 # Phi's Carefree Leveling
 Optimal vanilla leveling for OpenMW 0.48
 
+## TES3MP
+The TES3MP version is in the `pclmp` folder.  Theres a README for TES3MP in there.
+
 ## What it does
 Vanilla Leveling but always optimal, no more worrying about optimizing skill leveling, no more prioritizing endurance early on if you don't want to.
 
