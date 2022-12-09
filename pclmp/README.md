@@ -1,4 +1,4 @@
-# Phi's Carefree Leveling
+# Phi's Carefree Leveling Multiplayer
 Optimal Vanilla Leveling for TES3MP 0.8.1
 
 ## Differences from the OpenMW version
