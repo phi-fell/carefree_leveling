@@ -249,6 +249,7 @@ local function recalculate_health(pid)
         end
         Players[pid].data.stats.healthBase = h
         tes3mp.SetHealthBase(pid, h)
+        tes3mp.SendStatsDynamic(pid)
     end
 end
 
