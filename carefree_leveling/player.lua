@@ -228,9 +228,10 @@ end
 local function cache_skills()
     if cached_skills then
         for _, skill in ipairs(skills) do
-            local dif = getSkillLevel(skill) - cached_skills[skill]
+            local new_level = getSkillLevel(skill)
+            local dif = new_level - cached_skills[skill]
             if dif > 0 then
-                cached_skills[skill] = getSkillLevel(skill)
+                cached_skills[skill] = new_level
                 local a = governing_attribute[skill]
                 attribute_skill_ups[a] = attribute_skill_ups[a] + dif
                 increase_attributes_if_needed(0)
