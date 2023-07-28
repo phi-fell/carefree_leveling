@@ -122,15 +122,25 @@ local function get_attribute(pid, attribute)
 end
 
 local function set_attribute(pid, attribute, val)
+    if val > 100 then
+        val = 100
+    end
     Players[pid].data.attributes[attribute].base = val
     Players[pid].data.customVariables.PCLMP.cached_attributes[attribute] = val
     Players[pid]:LoadAttributes()
 end
 
 local function increase_attribute(pid, attribute, val)
-    local new = get_attribute(pid, attribute) + val
-    set_attribute(pid, attribute, new)
-    message_box(pid, attribute .. ' increased to ' .. new .. '!' )
+    local old = get_attribute(pid, attribute)
+    if old < 100 then
+        local new = get_attribute(pid, attribute) + val
+        -- needed for correct message (set_attribute() also checks)
+        if new > 100 then
+            new = 100
+        end
+        set_attribute(pid, attribute, new)
+        message_box(pid, attribute .. ' increased to ' .. new .. '!' )
+    end
 end
 
 local function get_skill(pid, skill)

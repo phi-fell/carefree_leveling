@@ -163,7 +163,7 @@ local function increase_attributes_if_needed(lpts)
     local msg = ""
     for _, attr in ipairs(attributes) do
         local pts = 0
-        while attribute_points_owed[attr] > 0 and attribute_skill_ups[attr] >= 2 do
+        while getAttribute(attr) < 100 and attribute_points_owed[attr] > 0 and attribute_skill_ups[attr] >= 2 do
             modAttribute(attr, 1)
             attribute_points_owed[attr] = attribute_points_owed[attr] - 1
             attribute_skill_ups[attr] = attribute_skill_ups[attr] - 2
@@ -181,10 +181,15 @@ local function increase_attributes_if_needed(lpts)
         end
         cached_attributes[attr] = getAttribute(attr)
         if settings.retroactive_luck() then
-            while getAttribute('luck') + settings.luck_multiplier() <= 100 and getAttribute(attr) + attribute_points_owed[attr] >= 105 do
+            while getAttribute('luck') < 100 and getAttribute(attr) + attribute_points_owed[attr] >= 105 do
+                local luck_to_add = settings.luck_multiplier()
+                local new_luck = getAttribute('luck') + settings.luck_multiplier()
+                if new_luck > 100 then
+                    luck_to_add = luck_to_add - (new_luck - 100)
+                end
                 attribute_points_owed[attr] = attribute_points_owed[attr] - 5
-                modAttribute('luck', settings.luck_multiplier())
-                lpts = lpts + settings.luck_multiplier()
+                modAttribute('luck', luck_to_add)
+                lpts = lpts + luck_to_add
             end
         end
     end
@@ -341,9 +346,16 @@ local function onUpdate()
             end
             if settings.retroactive_luck() then
                 while attrs_increased < 3 do
-                    modAttribute('luck', settings.luck_multiplier())
+                    local current = getAttribute('luck')
+                    local mul = settings.luck_multiplier()
+                    if current + mul > 100 then
+                        mul = mul - ((current + mul) - 100)
+                    end
+                    if mul > 0 then
+                        modAttribute('luck', mul)
+                        lpts = lpts + mul
+                    end
                     attrs_increased = attrs_increased + 1
-                    lpts = lpts + settings.luck_multiplier()
                 end
             end
             increase_attributes_if_needed(lpts)
