@@ -39,7 +39,7 @@ for example
 
 ## Installation and Use
 
-REQUIRES OPENMW 0.48 OR HIGHER, GET THE RELEASE CANDIDATE [HERE](https://openmw.org/2022/openmw-0-48-0-is-now-in-rc-phase/)
+REQUIRES OPENMW 0.48 OR HIGHER
 
 REQUIRES A FRESH SAVE TO WORK.  The scripts should just ignore old saves (though you will get a message about missing data).
 
