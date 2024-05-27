@@ -1,5 +1,7 @@
 # Phi's Carefree Leveling
-Optimal vanilla leveling for OpenMW 0.48
+Optimal vanilla leveling for OpenMW 0.49
+
+for 0.48, check the 0.48 branch
 
 ## TES3MP
 The TES3MP version is in the `pclmp` folder.  Theres a README for TES3MP in there.
