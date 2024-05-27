@@ -19,36 +19,6 @@ I.Settings.registerPage {
     description = NAME .. " settings",
 }
 
-I.Settings.registerRenderer('inputKeySelection', function(value, set)
-    local name = 'No Key Set'
-    if value then
-        name = input.getKeyName(value)
-    end
-    return {
-        template = I.MWUI.templates.box,
-        content = ui.content {
-            {
-                template = I.MWUI.templates.padding,
-                content = ui.content {
-                    {
-                        template = I.MWUI.templates.textEditLine,
-                        props = {
-                            text = name,
-                        },
-                        events = {
-                            keyPress = async:callback(function(e)
-                                
-                                set(e.code)
-                            end),
-                        },
-                    },
-                },
-            },
-        },
-
-    }
-end)
-
 I.Settings.registerGroup {
     key = PREFIX .. 'SettingsControls',
     l10n = PREFIX,
