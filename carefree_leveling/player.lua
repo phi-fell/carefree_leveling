@@ -1,10 +1,7 @@
 local nearby = require('openmw.nearby')
 local ui = require('openmw.ui')
-local util = require('openmw.util')
-local input = require('openmw.input')
 local self = require('openmw.self')
 local types = require('openmw.types')
-local storage = require('openmw.storage')
 local settings = require('carefree_leveling.settings')
 
 local function handle_error(e)

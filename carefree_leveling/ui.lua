@@ -1,5 +1,4 @@
 local ui = require('openmw.ui')
-local async = require('openmw.async')
 local util = require('openmw.util')
 local interfaces = require('openmw.interfaces')
 

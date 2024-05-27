@@ -1,16 +1,12 @@
 local input = require('openmw.input')
 local storage = require('openmw.storage')
-local async = require('openmw.async')
 local util = require('openmw.util')
-local ui = require('openmw.ui')
 local I = require('openmw.interfaces')
 
 local v2 = util.vector2
 
 local PREFIX = 'PCL'
 local NAME = 'Phi\'s Carefree Leveling'
-
-local consume_key = nil
 
 I.Settings.registerPage {
     key = PREFIX,
