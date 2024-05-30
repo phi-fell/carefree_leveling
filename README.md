@@ -1,10 +1,14 @@
 # Phi's Carefree Leveling
-Optimal vanilla leveling for OpenMW 0.49
+Optimal vanilla leveling for OpenMW 0.48+
 
-## !!!!! For OpenMW 0.48, check the 0.48 branch [here](https://github.com/phi-fell/carefree_leveling/tree/0.48) !!!!!
+## OpenMW 0.48
+Grab everything in the 0.48 folder
+
+## OpenMW 0.49 or later
+For OpenMW 0.49+ grab everything in the "0.49 or later" folder
 
 ## TES3MP
-The TES3MP version is in the `pclmp` folder.  Theres a README for TES3MP in there.
+The TES3MP version is in the `pclmp` folder.  Theres a separate README for TES3MP in there.
 
 ## What it does
 Vanilla Leveling but always optimal, no more worrying about optimizing skill leveling, no more prioritizing endurance early on if you don't want to.
@@ -48,6 +52,8 @@ REQUIRES A FRESH SAVE TO WORK.  The scripts should just ignore old saves (though
 see: https://openmw.readthedocs.io/en/stable/reference/modding/mod-install.html
 
 TL;DR: if you download this mod such that the `carefree_leveling.omwscripts` has the path: `OpenMW Mods/Phi's Carefree Leveling/carefree_leveling.omwscripts`
+
+(where `OpenMW Mods` is the path to your openmw mods folder)
 
 you'd just need to edit your openmw.cfg and add two lines to the end of it:
 
