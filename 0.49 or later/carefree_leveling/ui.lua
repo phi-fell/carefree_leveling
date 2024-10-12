@@ -87,8 +87,13 @@ end
 
 local function reset_status_layout()
     local content = {
-        start_feed_l(0, constants.BORDER_SIZE, constants.BORDER_SIZE, 'Character creation'),
-        new_line_l('in progress...')
+        start_feed_l(0, constants.BORDER_SIZE, constants.BORDER_SIZE, 'Character creation incomplete.'),
+        new_line_l('If you made this character'),
+        new_line_l('without PCL, or are using'),
+        new_line_l('an alternate start mod there\'s'),
+        new_line_l('a manual activation button'),
+        new_line_l('in the options menu.'),
+        new_line_l('(look under the \'Scripts\' tab)'),
     }
     if attribute_data then
         local attr_count = 0
@@ -116,7 +121,7 @@ local function reset_status_layout()
     status_layout = {
         type = ui.TYPE.Widget,
         props = {
-            size = util.vector2(220, 40),
+            size = util.vector2(240, 40),
         },
         content = ui.content(content),
     }

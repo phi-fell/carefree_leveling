@@ -300,6 +300,9 @@ local function onLoad()
     starting_strength = data.starting_strength
     attribute_points_owed = data.attribute_points_owed
     attribute_skill_ups = data.attribute_skill_ups
+
+    settings.set_activated(character_creation_complete)
+
     if character_creation_complete then
         update_status()
     end
@@ -319,11 +322,12 @@ local function onUpdate()
     local dt = on_update_dt
 
     if not character_creation_complete then
-        if papers_present() then
+        if papers_present() or settings.get_activated() then
             character_creation_complete = true
             init_player_stats()
         end
     else
+        settings.set_activated(character_creation_complete)
         if getCurrentLevel() > level then
             level = getCurrentLevel()
             local attrs_increased = 0

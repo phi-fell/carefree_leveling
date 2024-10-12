@@ -16,6 +16,24 @@ I.Settings.registerPage {
 }
 
 I.Settings.registerGroup {
+    key = PREFIX .. 'SettingsActivate',
+    l10n = PREFIX,
+    page = PREFIX,
+    order = 1,
+    name = 'Activate',
+    permanentStorage = false,
+    settings = {
+        {
+            key = 'activated',
+            renderer = 'singleUseButton',
+            name = 'Activate Manually',
+            description = 'If needed, you can click this button to activate PCL for this character after character creation is completed.  Note that this is PERMANENT, and PCL will not attempt to optimize skill/attribute gains that occurred before activation.',
+            default = 0,
+        },
+    },
+}
+
+I.Settings.registerGroup {
     key = PREFIX .. 'SettingsControls',
     l10n = PREFIX,
     page = PREFIX,
@@ -111,6 +129,17 @@ I.Settings.registerGroup {
 }
 
 return {
+    -- We use 0,1,2 for activated because otherwise the setting can persist in wierd ways if you load a file from the same character
+    set_activated = function(val)
+        local n = 0
+        if val then
+            n = 1
+        end
+        storage.playerSection(PREFIX .. 'SettingsActivate'):set('activated', n)
+    end,
+    get_activated = function()
+        return storage.playerSection(PREFIX .. 'SettingsActivate'):get('activated') == 2
+    end,
     status_key = function()
         return storage.playerSection(PREFIX .. 'SettingsControls'):get('status_key')
     end,
