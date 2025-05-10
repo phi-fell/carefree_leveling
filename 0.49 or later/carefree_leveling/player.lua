@@ -2,6 +2,7 @@ local nearby = require('openmw.nearby')
 local ui = require('openmw.ui')
 local self = require('openmw.self')
 local types = require('openmw.types')
+local I = require('openmw.interfaces')
 local settings = require('carefree_leveling.settings')
 
 local function handle_error(e)
@@ -16,8 +17,6 @@ local status_ui = require('carefree_leveling.ui')
 
 local scriptVersion = 1
 
-local status_menu_element = nil
-
 local attributes = {
     'strength',
     'intelligence',
@@ -27,36 +26,6 @@ local attributes = {
     'endurance',
     'personality',
     'luck',
-}
-
-local skills = {
-   'block',
-   'armorer',
-   'mediumarmor',
-   'heavyarmor',
-   'bluntweapon',
-   'longblade',
-   'axe',
-   'spear',
-   'athletics',
-   'enchant',
-   'destruction',
-   'alteration',
-   'illusion',
-   'conjuration',
-   'mysticism',
-   'restoration',
-   'alchemy',
-   'unarmored',
-   'security',
-   'sneak',
-   'acrobatics',
-   'lightarmor',
-   'shortblade',
-   'marksman',
-   'mercantile',
-   'speechcraft',
-   'handtohand',
 }
 
 local governing_attribute = {
@@ -103,22 +72,11 @@ end
 local level = 1
 
 local cached_attributes = nil
-local cached_skills = nil
 
 -- General Functions
 
 local function getCurrentLevel()
     return types.Player.stats.level(self).current
-end
-
-local function getSkillLevel(skill)
-    return types.Player.stats.skills[skill](self).base
-end
-local function setSkillLevel(skill, val)
-    types.Player.stats.skills[skill](self).base = val
-end
-local function modSkillLevel(skill, amnt)
-    types.Player.stats.skills[skill](self).base = types.Player.stats.skills[skill](self).base + amnt
 end
 
 local function getAttribute(attr)
@@ -227,27 +185,6 @@ local function cache_attributes()
     end
 end
 
-local function cache_skills()
-    if cached_skills then
-        for _, skill in ipairs(skills) do
-            local new_level = getSkillLevel(skill)
-            local dif = new_level - cached_skills[skill]
-            if dif > 0 then
-                cached_skills[skill] = new_level
-                local a = governing_attribute[skill]
-                attribute_skill_ups[a] = attribute_skill_ups[a] + dif
-                increase_attributes_if_needed(0)
-                update_status()
-            end
-        end
-    else
-        cached_skills = {}
-        for _, skill in ipairs(skills) do
-            cached_skills[skill] = getSkillLevel(skill)
-        end
-    end
-end
-
 local function init_player_stats()
     level = getCurrentLevel()
     starting_endurance = getAttribute('endurance')
@@ -255,6 +192,15 @@ local function init_player_stats()
     ui.showMessage('Carefree Leveling Initialized!')
     update_status()
 end
+
+-- On skill increase
+
+I.SkillProgression.addSkillLevelUpHandler(function(skillid, options)
+    local a = governing_attribute[skillid]
+    attribute_skill_ups[a] = attribute_skill_ups[a] + 1
+    increase_attributes_if_needed(0)
+    update_status()
+end)
 
 -- Engine Handlers
 
@@ -324,10 +270,10 @@ local function onUpdate()
     if not character_creation_complete then
         if papers_present() or settings.get_activated() then
             character_creation_complete = true
+            settings.set_activated(character_creation_complete)
             init_player_stats()
         end
     else
-        settings.set_activated(character_creation_complete)
         if getCurrentLevel() > level then
             level = getCurrentLevel()
             local attrs_increased = 0
@@ -363,7 +309,6 @@ local function onUpdate()
             update_status()
         end
         cache_attributes()
-        cache_skills()
     end
 end
 
