@@ -93,6 +93,28 @@ local function setHealth(val)
     types.Player.stats.dynamic.health(self).base = val
 end
 
+local function update_attribute_multipliers()
+    for _, attribute in ipairs(attributes) do
+        local s = attribute_skill_ups[attribute]
+        if attribute_points_owed[attribute] > 0 then
+            s = 0
+        end
+        local mul = 0
+        if s >= 10 then
+            mul = 10
+        elseif s >= 8 then
+            mul = 8
+        elseif s >= 6 then
+            mul = 5
+        elseif s >= 4 then
+            mul = 1
+        elseif s >= 2 then
+            mul = 0
+        end
+        types.Player.stats.level(self).skillIncreasesForAttribute[attribute] = mul
+    end
+end
+
 local function update_status()
     local v = {}
     for _, attribute in ipairs(attributes) do
@@ -310,6 +332,7 @@ local function onUpdate()
             update_status()
         end
         cache_attributes()
+        update_attribute_multipliers()
     end
 end
 
