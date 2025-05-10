@@ -286,7 +286,8 @@ local function onUpdate()
                         modAttribute('luck', settings.luck_multiplier())
                         lpts = lpts + settings.luck_multiplier()
                     else
-                        attribute_points_owed[attribute] = attribute_points_owed[attribute] + 5
+                        attribute_points_owed[attribute] = attribute_points_owed[attribute] +
+                            settings.attribute_cap_increase()
                     end
                     attrs_increased = attrs_increased + 1
                 end
