@@ -312,7 +312,7 @@ function pclmp.on_level(eventStatus, pid)
                         local new_luck = Players[pid].data.customVariables.PCLMP.cached_attributes[attribute] + LUCK_MULTIPLIER
                         set_attribute(pid, 'Luck', new_luck)
                     else
-                        if get_attribute(pid, attribute) + Players[pid].data.customVariables.PCLMP.attribute_points_owed[attribute] + 5 <= 100 then
+                        if get_cached_attribute(pid, attribute) + Players[pid].data.customVariables.PCLMP.attribute_points_owed[attribute] < 100 then
                             Players[pid].data.customVariables.PCLMP.attribute_points_owed[attribute] = Players[pid].data.customVariables.PCLMP.attribute_points_owed[attribute] + 5
                             attrs_increased = attrs_increased + 1
                         end
